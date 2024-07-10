@@ -7,6 +7,7 @@ import (
 
 	"github.com/0xPolygonHermez/zkevm-synchronizer-l1/etherman/smartcontracts/oldpolygonzkevm"
 	"github.com/0xPolygonHermez/zkevm-synchronizer-l1/etherman/smartcontracts/polygonzkevm"
+	"github.com/0xPolygonHermez/zkevm-synchronizer-l1/log"
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -131,9 +132,11 @@ func (s *SequencedBatch) String() string {
 
 func (s *SequencedBatch) BatchL2Data() []byte {
 	if s.PolygonZkEVMBatchData != nil {
+		log.Info("zjg, PolygonZkEVMBatchData PolygonRollupBaseEtrogBatchData")
 		return s.PolygonZkEVMBatchData.Transactions
 	}
 	if s.PolygonRollupBaseEtrogBatchData != nil {
+		log.Info("zjg, SequencedBatch PolygonRollupBaseEtrogBatchData")
 		return s.PolygonRollupBaseEtrogBatchData.Transactions
 	}
 	return nil
