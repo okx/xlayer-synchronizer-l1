@@ -638,6 +638,8 @@ func logEvents(logs []types.Log) {
 }
 
 func (etherMan *Client) processEvent(ctx context.Context, vLog types.Log, blocks *[]Block, blocksOrder *map[common.Hash][]Order) error {
+	log.Info(fmt.Sprintf("zjg: processEvent, topic:%v, BlockNumber:%v, tx:%v", vLog.Topics[0].String(), vLog.BlockNumber, vLog.TxHash.String()))
+
 	switch vLog.Topics[0] {
 	case sequenceBatchesSignatureHash:
 		return etherMan.sequencedBatchesEvent(ctx, vLog, blocks, blocksOrder)
@@ -766,6 +768,9 @@ func (etherMan *Client) processEvent(ctx context.Context, vLog types.Log, blocks
 		return nil
 	case setBatchFeeSignatureHash:
 		log.Debug("SetBatchFee event detected. Ignoring...")
+		return nil
+	case setDataAvailabilityProtocolSignatureHash:
+		log.Debug("setDataAvailabilityProtocol event detected. Ignoring...")
 		return nil
 	}
 	log.Warnf("Event not registered: %+v", vLog)

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/0xPolygonHermez/zkevm-synchronizer-l1/log"
+
 	"github.com/0xPolygonHermez/zkevm-synchronizer-l1/state/entities"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/jackc/pgx/v4"
@@ -18,6 +20,7 @@ func (p *PostgresStorage) AddL1InfoTreeLeaf(ctx context.Context, exitRoot *L1Inf
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
 	`
 	e := p.getExecQuerier(getPgTx(dbTx))
+	log.Info(fmt.Sprintf("zjg, addGlobalExitRootSQL:%v, l1_info_tree_index:%v", addGlobalExitRootSQL, exitRoot.L1InfoTreeIndex))
 	_, err := e.Exec(ctx, addGlobalExitRootSQL,
 		exitRoot.BlockNumber, exitRoot.Timestamp, exitRoot.MainnetExitRoot.String(), exitRoot.RollupExitRoot.String(),
 		exitRoot.GlobalExitRoot.String(), exitRoot.PreviousBlockHash.String(), exitRoot.L1InfoTreeRoot.String(), exitRoot.L1InfoTreeIndex)
@@ -71,6 +74,7 @@ func (p *PostgresStorage) GetL1InfoLeafPerIndex(ctx context.Context, L1InfoTreeI
 		FROM sync.exit_root 
 		WHERE l1_info_tree_index = $1`
 	e := p.getExecQuerier(getPgTx(dbTx))
+	log.Info(fmt.Sprintf("zjg, getL1InfoLeafPerIndexSQL:%v, L1InfoTreeIndex:%v", getL1InfoLeafPerIndexSQL, L1InfoTreeIndex))
 	row := e.QueryRow(ctx, getL1InfoLeafPerIndexSQL, L1InfoTreeIndex)
 	entry, err := scanL1InfoTreeExitRootStorageEntry(row)
 	if errors.Is(err, pgx.ErrNoRows) {
